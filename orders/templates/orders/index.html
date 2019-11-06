@@ -2,6 +2,26 @@
 
 {% block title %}Pizza Shop{%endblock%}
 {% block body %}
-    <p>Hello world!</p>
+    <h1>Menu of Bazz's pizza</h1>
+    <table>
+        {% for num in len%}
+            <tbody>
+                <caption>{{num}} item</caption>
+                <tr>
+                    <th></th>
+                    {% for item in sizes %}
+                        <th>  {{item}} </th>
+                    {%endfor%}
+                </tr>
+                {% for item in reg_pizza%}
+                    <tr>
+                        <td> {{item.pizza_type}}</td>
+                        <td> {{item.size.price}}</td>
+                        <td> {{item.size.price}}</td>
+                    </tr>
+                {%endfor%}
+            </tbody>
+            {%endfor%}
+    </table>
 {%endblock%}
 
