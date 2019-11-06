@@ -3,25 +3,27 @@
 {% block title %}Pizza Shop{%endblock%}
 {% block body %}
     <h1>Menu of Bazz's pizza</h1>
-    <table>
-        {% for num in len%}
-            <tbody>
-                <caption>{{num}} item</caption>
+    {% for category in categories %}
+        <table>
+            <caption>{{category}}</caption>
+            <tbody></tbody>
                 <tr>
                     <th></th>
-                    {% for item in sizes %}
-                        <th>  {{item}} </th>
+                    {% for size in sizes %}
+                        <th>  {{size}} </th>
                     {%endfor%}
                 </tr>
-                {% for item in reg_pizza%}
-                    <tr>
-                        <td> {{item.pizza_type}}</td>
-                        <td> {{item.size.price}}</td>
-                        <td> {{item.size.price}}</td>
-                    </tr>
+                {% for item in menu %}
+                    {% if item.category == category %}
+                        <tr>
+                            <td> {{item}}</td>
+                            <td> {{item.price}}</td>
+                            <td> {{item.price}}</td>
+                        </tr>
+                    {% endif%}
                 {%endfor%}
             </tbody>
-            {%endfor%}
-    </table>
+        </table>
+    {%endfor%}
 {%endblock%}
 
