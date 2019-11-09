@@ -2,6 +2,30 @@
 
 {% block title %}Pizza Shop{%endblock%}
 {% block body %}
-    <p>Hello world!</p>
+    <h1>Menu of Bazz's pizza</h1>
+    {% for category in categories %}
+        <table>
+            <caption>{{category}}</caption>
+                <tr>
+                    <th></th>
+                    {% for size in category.sizes.all %}
+                        <th>  {{size}} </th>
+                    {%endfor%}
+                </tr>
+                {% for kind in category.kinds.all %}
+                    <tr>
+                        <td> {{kind}}</td>
+                        {% for size in category.sizes.all%}
+                            {%for menuItem in menu %}
+                                {% if menuItem.category == category and menuItem.kind == kind and menuItem.size == size%}
+                                    <td> {{menuItem.price}}</td>
+                                {% endif %}
+                            {%endfor%}
+                        {%endfor%}
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    {%endfor%}
 {%endblock%}
 
