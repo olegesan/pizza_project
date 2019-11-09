@@ -8,5 +8,7 @@ def index(request):
         "menu": MenuItem.objects.all(),
         'categories':Category.objects.all(),
         'sizes': Size.objects.all(),
+        'menu_raw' : MenuItem.objects,
+        'kinds': Kind.objects.all()
     }
     return render(request, "orders/index.html", content)

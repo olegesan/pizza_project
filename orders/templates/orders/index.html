@@ -6,21 +6,23 @@
     {% for category in categories %}
         <table>
             <caption>{{category}}</caption>
-            <tbody></tbody>
                 <tr>
                     <th></th>
-                    {% for size in sizes %}
+                    {% for size in category.sizes.all %}
                         <th>  {{size}} </th>
                     {%endfor%}
                 </tr>
-                {% for item in menu %}
-                    {% if item.category == category %}
-                        <tr>
-                            <td> {{item}}</td>
-                            <td> {{item.price}}</td>
-                            <td> {{item.price}}</td>
-                        </tr>
-                    {% endif%}
+                {% for kind in category.kinds.all %}
+                    <tr>
+                        <td> {{kind}}</td>
+                        {% for size in category.sizes.all%}
+                            {%for menuItem in menu %}
+                                {% if menuItem.category == category and menuItem.kind == kind and menuItem.size == size%}
+                                    <td> {{menuItem.price}}</td>
+                                {% endif %}
+                            {%endfor%}
+                        {%endfor%}
+                    </tr>
                 {%endfor%}
             </tbody>
         </table>

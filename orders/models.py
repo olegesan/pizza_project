@@ -2,36 +2,49 @@ from django.db import models
 ###
 ### support 
 ###
-class  Size(models.Model):
-    size = models.CharField(max_length=64)
-    def __str__(self):
-        return f"{self.size}"
 class Price(models.Model):
-    price = models.CharField(max_length=64)
+    price = models.FloatField()
     def __str__(self):
         return f"{self.price}"
     class Meta:
         ordering = ['price']
+class  Size(models.Model):
+    size = models.CharField(max_length=64)
+    def __str__(self):
+        return f"{self.size}"
+    class Meta:
+        ordering = ['-size']
 class Kind(models.Model):
     kind = models.CharField(max_length=64)
     def __str__(self):
         return f'{self.kind}'
+    class Meta:
+        ordering = ['kind']
 class Category(models.Model):
     category =  models.CharField(max_length=64)
+    sizes = models.ManyToManyField(Size, related_name="cat_sizes", blank = True, null = True)
+    kinds = models.ManyToManyField(Kind, related_name='cat_kinds', blank = False)
     def __str__(self):
         return f'{self.category}'
+    def show_sizes(self):
+        return f'{self.sizes.all()}'
+    class Meta:
+        ordering = ['category']
 class MenuItem(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="categories")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="categories", blank = True, null = True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="sizes", blank = True, null = True)
-    price = models.ForeignKey(Price, on_delete=models.CASCADE, related_name='prices', blank = True, null = True)
+    # price = models.ForeignKey(Price, on_delete=models.CASCADE, related_name='prices', blank = True, null = True)
+    price = models.FloatField()
     kind = models.ForeignKey(Kind,on_delete=models.CASCADE, related_name='kinds')
     def __str__(self):
-        if str(self.category) !='Toppings':
+        if str(self.category) != 'Toppings':
             return f'{self.category}: {self.kind} {self.size} for ${self.price} dollars'
         return f'{self.category}: {self.kind}'
     class Meta:
         ordering = ['-category', 'price', 'size']
-
+# class Pizza(MenuItem):
+#     def __str__(self):
+#         return f'{self.category} {self.size} {self.price} {self.kind}'
 
     
 
