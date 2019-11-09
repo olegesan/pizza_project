@@ -21,6 +21,12 @@
                                     <td> {{menuItem.price}}</td>
                                 {% endif %}
                             {%endfor%}
+                            {% empty %}
+                                {%for menuItem in menu %}
+                                    {% if menuItem.category == category and menuItem.kind == kind %}
+                                        <td> {{menuItem.price}}</td>
+                                    {% endif %}
+                                {%endfor%}
                         {%endfor%}
                     </tr>
                 {%endfor%}

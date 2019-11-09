@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Size, Price, MenuItem, Category, Kind
+from .models import Size, MenuItem, Category, Kind
 admin.site.register(Size)
-admin.site.register(Price)
+# admin.site.register(Price)
 admin.site.register(MenuItem)
 admin.site.register(Category)
 admin.site.register(Kind)

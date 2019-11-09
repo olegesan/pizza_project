@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Size, MenuItem, Category, Price, Kind
+from .models import Size, MenuItem, Category, Kind
 
 # Create your views here.
 def index(request):
