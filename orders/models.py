@@ -3,7 +3,7 @@ from django.db import models
 ### support 
 ###
 class Price(models.Model):
-    price = models.FloatField()
+    price = models.FloatField(blank=True, null = True)
     def __str__(self):
         return f"{self.price}"
     class Meta:
@@ -16,26 +16,29 @@ class  Size(models.Model):
         ordering = ['-size']
 class Kind(models.Model):
     kind = models.CharField(max_length=64)
+    menu_priority = models.IntegerField(null = True)
     def __str__(self):
         return f'{self.kind}'
     class Meta:
-        ordering = ['kind']
+        ordering = ['-menu_priority']
 class Category(models.Model):
     category =  models.CharField(max_length=64)
     sizes = models.ManyToManyField(Size, related_name="cat_sizes", blank = True, null = True)
     kinds = models.ManyToManyField(Kind, related_name='cat_kinds', blank = False)
+    menu_priority = models.IntegerField(null = True)
     def __str__(self):
         return f'{self.category}'
     def show_sizes(self):
         return f'{self.sizes.all()}'
     class Meta:
-        ordering = ['category']
+        ordering = ['menu_priority']
 class MenuItem(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="categories", blank = True, null = True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="sizes", blank = True, null = True)
     # price = models.ForeignKey(Price, on_delete=models.CASCADE, related_name='prices', blank = True, null = True)
-    price = models.FloatField()
+    price = models.FloatField(blank=True, null = True)
     kind = models.ForeignKey(Kind,on_delete=models.CASCADE, related_name='kinds')
+    menu_priority = models.IntegerField(null = True)
     def __str__(self):
         if str(self.category) != 'Toppings':
             return f'{self.category}: {self.kind} {self.size} for ${self.price} dollars'
