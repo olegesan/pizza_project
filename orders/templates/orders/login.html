@@ -3,6 +3,13 @@
 {% block h1 %} <div class="container display-2 mb-2">Login</div>{% endblock %}
 {% block body %}
     <div class="container">
+            {% if messages %}
+            {% for message in messages %}
+            <div class='alert alert-danger' role='alert'>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
         <form action="/login/func/" method="POST" class="form-group">
                 {% csrf_token%} 
                 Login: <br>

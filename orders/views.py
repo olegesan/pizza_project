@@ -4,6 +4,8 @@ from django.urls import reverse
 from .models import Size, MenuItem, Category, Kind
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.messages import get_messages
+from django.contrib import messages
 
 #
 # authentication content for pages
@@ -13,8 +15,8 @@ from django.contrib.auth import authenticate, login, logout
 def index(request):
     user_info={
     'user': request.user,
-    'Auth' : request.user.is_authenticated,
-}
+    'Auth' : request.user.is_authenticated
+    }   
     return render(request, 'orders/index.html', user_info)
 def menu(request):
     content = {
@@ -39,6 +41,7 @@ def signup_new(request):
                                     email,
                                     password)
         user.save()
+        return redirect('orders/index.html')
     except:
         # print(email, password, username)
         return HttpResponse('there was an error')
@@ -50,9 +53,12 @@ def login_func(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request,user)
-            return redirect('/') 
+            return redirect('/')
+        else:
+            messages.add_message(request, messages.ERROR, 'Incorrect login or password')
+            return redirect(request,'orders/login.html')
     except:
-        return HttpResponse('something went suuuper wrong')
+        return render(request,'orders/login.html', {'message':'Incorrect login or password'}) 
 def login_page(request):
     return render(request,'orders/login.html')
 def logout_page(request):
@@ -67,6 +73,8 @@ def logout_func(request):
         return render(request,'orders/index.html')
     except:
         return HttpResponse('something went suuuper wrong, perhaps you were not logged in')
+# def cart(request):
+#     TODO
 # def profile_open(request, user_id):
 #     content={
 #         'user' = User.objects.get(pk=)
