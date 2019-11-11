@@ -9,8 +9,10 @@ Web Programming with Python and JavaScript
 TODO:
 - add users system:
   - DONE authentication
-  - sessions
-  - log out logic
+  - AUTO sessions
+  - DONE log out logic
   - DONE signing up
+  known issues:
+    - can't handle wrong password
 - add cart
 - add orders to the stuff view
