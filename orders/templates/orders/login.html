@@ -1,0 +1,16 @@
+{%extends 'orders/base.html' %}
+{% block title %} login {% endblock %}
+{% block h1 %} <div class="container display-2 mb-2">Login</div>{% endblock %}
+{% block body %}
+    <div class="container">
+        <form action="/login/func/" method="POST" class="form-group">
+                {% csrf_token%} 
+                Login: <br>
+                <input type="text" class='form-control' name='username'><br>
+                Password:<br>
+                <input type="password" class='form-control' name='password'><br>
+                <input type="submit" class="btn btn-success">
+        </form>
+    </div>
+
+{% endblock%}

@@ -3,11 +3,16 @@ from django.shortcuts import render
 from django.urls import reverse
 from .models import Size, MenuItem, Category, Kind
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
 def index(request):
-    return render(request, 'orders/index.html')
+    content = {
+        'user': request.user,
+        'Auth' : request.user.is_authenticated
+    }
+    return render(request, 'orders/index.html', content)
 def menu(request):
     content = {
         "menu": MenuItem.objects.all(),
@@ -19,7 +24,7 @@ def menu(request):
     return render(request, "orders/menu.html", content)
 def somewhere(request):
     return HttpResponse('Somewhere')
-def signup(request):
+def signup_page(request):
     return render(request,'orders/signup.html')
 def signup_new(request):
     try:
@@ -35,3 +40,20 @@ def signup_new(request):
         # print(email, password, username)
         return HttpResponse('there was an error')
     return HttpResponseRedirect('/')
+def login_func(request):
+    try:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request,user)
+            return render(request,'orders/index.html', {'message':'success!'}) 
+    except:
+        return HttpResponse('something went suuuper wrong')
+def login_page(request):
+    return render(request,'orders/login.html')
+# def profile_open(request, user_id):
+#     content={
+#         'user' = User.objects.get(pk=)
+#     }
+#     return render(request,'orders/profile.html')
