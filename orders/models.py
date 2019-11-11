@@ -26,6 +26,7 @@ class Category(models.Model):
     sizes = models.ManyToManyField(Size, related_name="cat_sizes", blank = True, null = True)
     kinds = models.ManyToManyField(Kind, related_name='cat_kinds', blank = False)
     menu_priority = models.IntegerField(default = 100)
+    no_price=models.BooleanField(default=False)
     def __str__(self):
         return f'{self.category}'
     def show_sizes(self):

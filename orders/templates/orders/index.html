@@ -1,37 +1,11 @@
-{% extends "orders/base.html" %}
-
-{% block title %}Pizza Shop{%endblock%}
-{% block body %}
-    <h1>Menu of Bazz's pizza</h1>
-    {% for category in categories %}
-        <table>
-            <caption>{{category}}</caption>
-                <tr>
-                    <th></th>
-                    {% for size in category.sizes.all %}
-                        <th>  {{size}} </th>
-                    {%endfor%}
-                </tr>
-                {% for kind in category.kinds.all %}
-                    <tr>
-                        <td> {{kind}}</td>
-                        {% for size in category.sizes.all%}
-                            {%for menuItem in menu %}
-                                {% if menuItem.category == category and menuItem.kind == kind and menuItem.size == size%}
-                                    <td> {{menuItem.price}}</td>
-                                {% endif %}
-                            {%endfor%}
-                            {% empty %}
-                                {%for menuItem in menu %}
-                                    {% if menuItem.category == category and menuItem.kind == kind %}
-                                        <td> {{menuItem.price}}</td>
-                                    {% endif %}
-                                {%endfor%}
-                        {%endfor%}
-                    </tr>
-                {%endfor%}
-            </tbody>
-        </table>
-    {%endfor%}
+{%extends 'orders/base.html'%}
+{%block title%}Main{%endblock%}
+{% block h1%} <h1 class='text-center display-3'>Bazz's Pizza</h1> {%endblock%}
+{%block body%}
+<div class="container">
+    <div class="jumbotron">
+        <h1 class='display-4'>Welcome!</h1>
+        <a href='/menu' class="btn btn-danger">See our menu</a>
+    </div>
+</div>   
 {%endblock%}
-

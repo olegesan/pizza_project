@@ -1,0 +1,51 @@
+{% extends "orders/base.html" %}
+
+{% block title %}Pizza Shop{%endblock%}
+{%block h1%} <h1 class='display-2 text-center'>Menu of Bazz's pizza</h1>{%endblock%}
+{% block body %}
+    <div class='container-fluid text-center'>      
+        <div class="container">
+        <table class='table mt-0'>
+            {% for category in categories %}
+                <table class='table'>
+                <thead class='thead-light'>
+                    <tr>
+                        <th colspan="3" name='{{category}}'>{{category}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if category.sizes.all %}
+                    <tr>
+                        <th></th>
+                        {% for size in category.sizes.all %}
+                            <th>  {{size}} </th>
+                        {%endfor%}
+                    </tr>
+                    {%endif%}
+                    {% for kind in category.kinds.all %}
+                       
+                        <tr>
+                            <td> {{kind}}</td>
+                            {% for size in category.sizes.all%}
+                                {%for menuItem in menu %}
+                                    {% if menuItem.category == category and menuItem.kind == kind and menuItem.size == size%}
+                                        <td> {{menuItem.price}}</td>
+                                    {% endif %}
+                                {%endfor%}
+                                {% empty %}
+                                    {%for menuItem in menu %}
+                                        {% if menuItem.category == category and menuItem.kind == kind %}
+                                            <td> {{menuItem.price}}</td>
+                                        {% endif %}
+                                    {%endfor%}
+                            {%endfor%}
+                        </tr>
+                    {%endfor%}
+                    </tbody>        
+                </table>
+            {%endfor%}
+        </table>
+        </div>
+    </div>
+{%endblock%}
+
