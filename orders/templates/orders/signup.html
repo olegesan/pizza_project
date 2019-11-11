@@ -1,0 +1,19 @@
+{%extends 'orders/base.html'%}
+{%block title%} Sign Up {%endblock%}
+{%block h1%} <div class="container display-2 mb-2">Sign Up </div>  {%endblock%}
+{%block body%}
+<div class="container">
+    <form action="new/" method='POST' class='form'>
+        {% csrf_token%}
+        Login:<br>
+        <input type="text" name="login"><br><br>
+        Email:<br>
+        <input type="email" name="email"><br><br>
+        Password:<br>
+        <input type="password" name="password"><br><br>
+        <input class='btn btn-success' type="submit" value="Submit">
+
+    </form>
+</div>
+
+{%endblock%}
