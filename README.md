@@ -8,8 +8,9 @@ Web Programming with Python and JavaScript
 
 TODO:
 - add users system:
-  - authentication
+  - DONE authentication
   - sessions
+  - log out logic
   - DONE signing up
 - add cart
 - add orders to the stuff view
