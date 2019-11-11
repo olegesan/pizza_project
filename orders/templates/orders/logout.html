@@ -1,0 +1,13 @@
+{%extends 'orders/base.html' %}
+{% block title %} logout {% endblock %}
+{% block h1 %} <div class="container display-2 mb-2">Logout</div>{% endblock %}
+{% block body %}
+    <div class="container">
+        <form action="/logout/func/" method="POST" class="form-group">
+                {% csrf_token%} 
+                Logout <br>
+                <input type="submit" class="btn btn-danger" value = 'logout'>
+        </form>
+    </div>
+
+{% endblock%}

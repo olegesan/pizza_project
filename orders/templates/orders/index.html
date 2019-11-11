@@ -4,7 +4,7 @@
 {%block body%}
 <div class="container">
     <div class="jumbotron">
-        <h1 class='display-4'>Welcome! {{user}}</h1>
+        <h1 class='display-4'>Welcome! {% if Auth %}{{user}}{%endif%}</h1>
         <a href='/menu' class="btn btn-danger">See our menu</a>
     </div>
 </div>   
