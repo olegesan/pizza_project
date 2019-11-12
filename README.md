@@ -13,6 +13,11 @@ TODO:
   - DONE log out logic
   - DONE signing up
   known issues:
-    - can't handle wrong password
+    - FIXED can't handle wrong password
+  potential issues:
+    - message would show up regardless of the user/ test using two browsers
+- add user profile page with:
+  - current orders status
+  - orders history
 - add cart
 - add orders to the stuff view
