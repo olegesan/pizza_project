@@ -9,8 +9,15 @@ Web Programming with Python and JavaScript
 TODO:
 - add users system:
   - DONE authentication
-  - sessions
-  - log out logic
+  - AUTO sessions
+  - DONE log out logic
   - DONE signing up
+  known issues:
+    - FIXED can't handle wrong password
+  potential issues:
+    - message would show up regardless of the user/ test using two browsers
+- add user profile page with:
+  - current orders status
+  - orders history
 - add cart
 - add orders to the stuff view
