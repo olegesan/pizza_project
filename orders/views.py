@@ -75,8 +75,20 @@ def logout_func(request):
         return HttpResponse('something went suuuper wrong, perhaps you were not logged in')
 # def cart(request):
 #     TODO
-# def profile_open(request, user_id):
-#     content={
-#         'user' = User.objects.get(pk=)
-#     }
-#     return render(request,'orders/profile.html')
+def profile_open(request, user):
+    try:
+        print(request.user.is_authenticated)
+        print(request.user)
+        if request.user.is_authenticated and str(request.user) == user:
+            print(str(request.user))
+            print(user)
+            print(str(request.user) == user)
+            content={
+                'user' : request.user,
+                'Auth' : request.user.is_authenticated
+            }
+            return render(request,'orders/profile.html', content)
+        else:
+            return HttpResponse('you are not supposed to be here, bruh')
+    except:
+        return HttpResponse('you are not supposed to be here, bruh')

@@ -23,5 +23,6 @@ urlpatterns = [
     path('/somewhere/', include('orders.urls')),
     path('signup/', include('orders.urls')),
     path('signup/new/',include('orders.urls')),
-    path('login/', include('orders.urls'))
+    path('login/', include('orders.urls')),
+    path('<str:user>',include('orders.urls'))
 ]
