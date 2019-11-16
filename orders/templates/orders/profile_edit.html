@@ -1,0 +1,17 @@
+{% extends 'orders/base.html'%}
+{%block title%} {{user}} {%endblock%}
+{%block h1%} <h1 class="title container display-3">{{user}}'s profile</h1> {%endblock%}
+{% block body%}
+    <div class="container">
+        <form action="" class='form-group' method="post">
+            {% csrf_token%} 
+            <label for="firstname">First Name: </label><br>
+            <input id="firstname" class='form-control' type="text" name="firstname" value="{{ user.profile.firstname}}">
+            <label for="lastname">Last Name: </label><br>
+            <input id="lastname" class='form-control' type="text" name="lastname" value="{{ user.profile.lastname}}">
+            <label for="address">Address: </label><br>
+            <input id="address" class='form-control' type="text" name="address" value="{{ user.profile.address}}">
+            <input type="submit" class='btn btn-success lg mt-2' value="OK">
+        </form>
+    </div>
+{%endblock%}

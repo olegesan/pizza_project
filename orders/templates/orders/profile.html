@@ -1,6 +1,18 @@
 {% extends 'orders/base.html'%}
 {%block title%} {{user}} {%endblock%}
-{%block h1%} <h1 class="title container display-2">{{user}}'s page</h1> {%endblock%}
+{%block h1%} <h1 class="title container display-3">{{user}}'s profile</h1> {%endblock%}
 {% block body%}
-hello world
+    <div class="container">
+        <h2 class="display-3">{{user}}</h2>
+        {% if user.profile.firstname %} 
+        <h3>First Name: {{user.profile.firstname}}</h3>
+        {%endif%}
+        {%if user.profile.lastname %}
+        <h3>Last Name: {{user.profile.lastname}}</h3>
+        {%endif%}
+        {%if user.profile.address %}
+        <h3>Address: {{user.profile.address}}</h3>
+        {%endif%}
+        <a href="edit/"><button class="btn btn-success">EDIT</button></a> 
+    </div>
 {%endblock%}

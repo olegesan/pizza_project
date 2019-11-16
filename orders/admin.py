@@ -1,10 +1,15 @@
 from django.contrib import admin
-from .models import Size, MenuItem, Category, Kind
+from .models import Size, MenuItem, Category, Kind, Profile, Cart, OrderStatus, Order
 admin.site.register(Size)
 # admin.site.register(Price)
 admin.site.register(MenuItem)
 admin.site.register(Category)
 admin.site.register(Kind)
+admin.site.register(Profile)
+admin.site.register(Cart)
+admin.site.register(OrderStatus)
+admin.site.register(Order)
+
 
 
 

@@ -17,12 +17,13 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path("admin/", admin.site.urls),
     path("", include("orders.urls")),
     path("menu/", include("orders.urls")),
-    path("admin/", admin.site.urls),
-    path('/somewhere/', include('orders.urls')),
     path('signup/', include('orders.urls')),
-    path('signup/new/',include('orders.urls')),
     path('login/', include('orders.urls')),
-    path('<str:user>',include('orders.urls'))
+    path('<str:user>',include('orders.urls')),
+    path('<str:user>/edit/', include('orders.urls')),
+    path('<str:user>/cart/', include('orders.urls')),
+
 ]

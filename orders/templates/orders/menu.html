@@ -1,7 +1,7 @@
 {% extends "orders/base.html" %}
 
 {% block title %}Pizza Shop{%endblock%}
-{%block h1%} <h1 class='display-2 text-center'>Menu of Bazz's pizza</h1>{%endblock%}
+{%block h1%} <h1 class='display-2 text-center item'>Menu of Bazz's pizza</h1>{%endblock%}
 {% block body %}
     <div class='container-fluid text-center'>      
         <div class="container">
@@ -29,13 +29,13 @@
                             {% for size in category.sizes.all%}
                                 {%for menuItem in menu %}
                                     {% if menuItem.category == category and menuItem.kind == kind and menuItem.size == size%}
-                                        <td> {{menuItem.price}}</td>
+                                        <td id='{{menuItem.id}}' class='item'> {{menuItem.price}}</td>
                                     {% endif %}
                                 {%endfor%}
                                 {% empty %}
                                     {%for menuItem in menu %}
                                         {% if menuItem.category == category and menuItem.kind == kind %}
-                                            <td> {{menuItem.price}}</td>
+                                            <td id='{{menuItem.id}}' class='item'>{{menuItem.price}}</td>
                                         {% endif %}
                                     {%endfor%}
                             {%endfor%}

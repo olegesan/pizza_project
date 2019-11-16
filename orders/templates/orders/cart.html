@@ -1,0 +1,15 @@
+{% extends 'orders/base.html' %}
+{% block title %} {{user}}'s cart {%endblock%}
+{%block h1 %} <h1 class="container display-3"> Cart </h1> {%endblock%}
+{%block body%}
+<div class="container"> 
+    <div class="jumbotron">{{user}}'s cart:</div> 
+    {{name}}'s cart
+    <br>
+    {%for item in cart.items.all%}
+    <li> {{item}} </li>
+    {%endfor%}
+    <br>
+    {{user}}
+</div>
+{% endblock %}

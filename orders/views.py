@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Size, MenuItem, Category, Kind
+from .models import Size, MenuItem, Category, Kind, Cart, Order
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages import get_messages
@@ -29,23 +29,25 @@ def menu(request):
         'Auth' : request.user.is_authenticated,
     }
     return render(request, "orders/menu.html", content)
-def signup_page(request):
-    return render(request,'orders/signup.html')
-def signup_new(request):
-    try:
-        # print(reuqest.POST['email'])
+def signup(request):
+    if request.method == 'GET':
+        return render(request,'orders/signup.html')
+    elif request.method == 'POST':
         username = request.POST['login']
         password = request.POST['password']
         email = request.POST['email']
         user = User.objects.create_user(username,
                                     email,
                                     password)
+        user.profile.firstname = request.POST['firstname']
+        user.profile.lastname = request.POST['lastname']
+        user.profile.address = request.POST['address']
         user.save()
-        return redirect('orders/index.html')
-    except:
-        # print(email, password, username)
-        return HttpResponse('there was an error')
-    return redirect('orders/index.html')
+        return redirect('/')
+    # except:
+    #     # print(email, password, username)
+    #     return HttpResponse('there was an error')
+    return redirect('/')
 def login_func(request):
     try:
         username = request.POST['username']
@@ -73,22 +75,56 @@ def logout_func(request):
         return render(request,'orders/index.html')
     except:
         return HttpResponse('something went suuuper wrong, perhaps you were not logged in')
-# def cart(request):
-#     TODO
+
 def profile_open(request, user):
     try:
-        print(request.user.is_authenticated)
-        print(request.user)
         if request.user.is_authenticated and str(request.user) == user:
-            print(str(request.user))
-            print(user)
-            print(str(request.user) == user)
             content={
-                'user' : request.user,
+                'user' : User.objects.get(username=user),
                 'Auth' : request.user.is_authenticated
             }
+            u = User.objects.get(username=user)
+            print(u.profile.firstname)
             return render(request,'orders/profile.html', content)
         else:
             return HttpResponse('you are not supposed to be here, bruh')
     except:
         return HttpResponse('you are not supposed to be here, bruh')
+
+def profile_edit(request, user):
+    if request.method == "GET":
+        context = {
+            'user': User.objects.get(username=user),
+            'Auth' : request.user.is_authenticated,
+        }
+        return render(request,'orders/profile_edit.html', context )
+    elif request.method == "POST":
+        user = User.objects.get(username=user)
+        user.profile.firstname = request.POST['firstname']
+        user.profile.lastname = request.POST['lastname']
+        user.profile.address = request.POST['address']
+        user.save() 
+        return HttpResponseRedirect(reverse('profile', args=(user,)))
+    else:
+        return HttpResponse('something else hapepend')
+'''
+cart system and orders
+'''
+def cart(request, user):
+    if request.method == "GET":
+        if request.user.is_authenticated:
+            profile = User.objects.get(username=user).profile
+            content = {
+                'user': request.user,
+                'orders':profile.orders,
+                'name': profile.user,
+                'cart': Cart.objects.get(user_id=profile.user.id),
+            }
+            return render(request,'orders/cart.html', content)
+    elif request.method == 'POST':
+        username = request.POST['user']
+        item_id = request.POST['id']
+        cart = Cart.objects.get(user_id=User.objects.get(username=username).id)
+        # print(username, item_id)
+        cart.items.add(item_id)
+        
