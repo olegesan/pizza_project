@@ -17,6 +17,8 @@ TODO:
   potential issues:
     - message would show up regardless of the user/ test using two browsers
 - add user profile page with:
+  - DONE add logic and authentication for the page
+  - adjust USER model to add information about orders
   - current orders status
   - orders history
 - add cart:
