@@ -27,6 +27,7 @@ class Category(models.Model):
     menu_priority = models.IntegerField(default = 100)
     no_price=models.BooleanField(default=False)
     toppings = models.BooleanField(default=False)
+    addable = models.BooleanField(default=False)
     def __str__(self):
         return f'{self.category}'
     def show_sizes(self):
@@ -55,10 +56,12 @@ class OrderStatus(models.Model):
     def __str__(self):
         return f"{self.status}"
 class Cart(models.Model):
-    items = models.ManyToManyField(MenuItem, related_name='cart_items', null=True)
-    user = models.OneToOneField(User, on_delete = models.CASCADE, related_name='user_cart', blank = False, null = False)
+    item = models.ForeignKey(MenuItem,on_delete=models.CASCADE, related_name='cart_items', null=True, blank = True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='user_cart', blank = False, null = False)
+    amount = models.IntegerField()
+    toppings = models.ManyToManyField(Kind, blank = True, related_name = 'cart_topings')
     def __str__(self):
-        return f"User: {self.user} Cart item: {self.items.all()} "
+        return f"User: {self.user} Cart item: {self.item} "
 class Order(models.Model):
     item = models.ManyToManyField(Cart, related_name='order_items')
     user = models.OneToOneField(User, on_delete = models.CASCADE, related_name='user_order', blank = False, null = False)
@@ -75,7 +78,7 @@ class Profile(models.Model):
     orders = models.ManyToManyField(Order, related_name='users_order', blank = True)
     firstname = models.CharField(max_length=64, blank = True)
     lastname = models.CharField(max_length=64, blank = True)
-    cart = models.CharField
+    carts = models.ManyToManyField(Cart, related_name='users_carts', blank = True)
     def __str__(self):
         return f'{self.user}'
 @receiver(post_save, sender=User)

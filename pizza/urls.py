@@ -25,5 +25,6 @@ urlpatterns = [
     path('<str:user>',include('orders.urls')),
     path('<str:user>/edit/', include('orders.urls')),
     path('<str:user>/cart/', include('orders.urls')),
+    path('api/get/', include('orders.urls')),
 
 ]

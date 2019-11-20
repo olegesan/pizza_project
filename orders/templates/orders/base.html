@@ -30,7 +30,7 @@
                         <a class="nav-link" href="/logout/">Log out</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/{{user}}/cart/">Cart</a>
+                        <a class="nav-link" href="/{{user}}/cart/">Cart {%if user.carts.count > 0%}{{user.carts.count}} {%endif%}</a>
                     </li>
                     {% else %}
                     <li class="nav-item">

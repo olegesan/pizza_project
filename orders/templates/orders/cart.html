@@ -6,10 +6,13 @@
     <div class="jumbotron">{{user}}'s cart:</div> 
     {{name}}'s cart
     <br>
-    {%for item in cart.items.all%}
-    <li> {{item}} </li>
+    {%for item in cart%}
+    <div class='d-flex justify-content-between border-bottom pb-2 mb-1 pt-2' id="{{item.id}}">
+        <div> {{item.item}} </div>
+        <div>{{item.amount}}</div>
+        <div class="del btn btn-danger"> remove </div>
+
+    </div> 
     {%endfor%}
-    <br>
-    {{user}}
 </div>
 {% endblock %}

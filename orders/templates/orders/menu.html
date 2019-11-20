@@ -4,8 +4,13 @@
 {%block h1%} <h1 class='display-2 text-center item'>Menu of Bazz's pizza</h1>{%endblock%}
 {% block body %}
     <div class='container-fluid text-center'>      
-        <div class="container">
-        <table class='table mt-0'>
+        <div class="container col-6">
+        <table class='table mt-0 '>
+             <!-- The Modal -->
+             <div id="myModal" class="modal">
+                    <!-- Modal content -->
+                   
+            </div>
             {% for category in categories %}
                 <table class='table'>
                 <thead class='thead-light'>
@@ -25,7 +30,7 @@
                     {% for kind in category.kinds.all %}
                        
                         <tr>
-                            <td> {{kind}}</td>
+                            <td id='{{category.id}}_{{kind.id}}'> {%if not category.no_price%}<div id=''class="container d-flex justify-content-start"> <span class=' myBtn btn btn-primary mr-5'>add</span> <span>{{kind}}</span> </div>{%else%} <span>{{kind}}</span>{%endif%}</td>
                             {% for size in category.sizes.all%}
                                 {%for menuItem in menu %}
                                     {% if menuItem.category == category and menuItem.kind == kind and menuItem.size == size%}

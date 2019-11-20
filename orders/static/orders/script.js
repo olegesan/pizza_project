@@ -1,4 +1,3 @@
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -26,14 +25,138 @@ $.ajaxSetup({
         }
     }
 })
-
-$('.item').click(function(){
+// adding an element to user's cart
+$('.modal').on('click','#add', function(){
+    if(data['sizes'].length>0){
+        $.ajax({
+            url:'/{{user}}/cart/', 
+            type: 'POST',
+            data :{'amount':$("#amount").val(),
+            'size':$('input[name="size"]:checked').val(),
+            'kind_id':data['kind_id'], 'cat_id':data['cat_id'],'size_id':data[$('input[name="size"]:checked').val()]['id'],
+        'user': name}
+        });
+        console.log($('input[name="size"]:checked').val())
+    }
+    else{
+        $.ajax({
+            url:'/{{user}}/cart/', 
+            type: 'POST',
+            data :{'amount':$("#amount").val(),
+            'kind_id':data['kind_id'], 'cat_id':data['cat_id'],'size_id':false,
+        'user': name}
+        });
+        console.log('no size')
+    }
+    
+       
+    
+})
+//deleting an element from user's cart
+$('.del').click(function(){
+    id = $(this).parent().attr('id')
     $.ajax({
-        url:'/{{user}}/cart/', 
-        type: 'POST',
-        data :{'id':$(this).attr('id'),
-    'something else':"some words",
+        url:'/{{user}}/cart/',
+        type: 'DELETE',
+        data:{'id':id,
     'user': name}
-    });
-    console.log($(this).attr('id'))
+    })
+    .done(function(){
+        $('#'+id).remove()
+    })  
+})
+$('.del').css('cursor', 'pointer')
+//new stuff below ###
+// Get the modal
+var modal = $("#myModal");
+
+// Get the button that opens the modal
+var btn = $(".myBtn");
+
+// Get the <span> element that closes the modal
+var span = $(".cancel");
+var data = {}
+// When the user clicks the button, open the modal 
+btn.click(function() {
+    $.ajax({
+        url:'api/get/', 
+        type: 'GET',
+        data :{'id':$(this).parent().parent().attr('id'),
+    'user': name}
+    })
+    .done(function(data1){
+        data1 = JSON.parse(data1)
+        console.log(data1['sizes'])
+        toppings = ''
+        for(i=0; i<data1['toppings'].length; i++){
+            toppings+=`<div class="form-check d-flex justify-content-start">
+            <input class="form-check-input" type="checkbox" value="${data1['toppings'][i]}" id="${data1['toppings'][i]}">
+            <label class="form-check-label" for="${data1['toppings'][i]}">
+                ${data1['toppings'][i]}
+            </label>
+        </div>`
+        }
+        sizes = ''
+        if(data1['sizes']){
+            for(i=0; i<data1['sizes'].length; i++){
+            sizes+=`<div class="form-check d-flex justify-content-start">
+            <input class="form-check-input" type="radio" name='size' checked value="${data1['sizes'][i]}" id="${data1['sizes'][i]}">
+            <label class="form-check-label" for="${data1['sizes'][i]}">
+                ${data1['sizes'][i]}
+            </label>
+        </div>`
+            }
+        }
+        div = ` <div class="modal-content">
+        <div method='POST' class='form'>
+            <h2 class='title text-center'>${data1['cat']}: ${data1['kind']}</h2>
+            <div class="form-group row">
+                <label for="amount" class='col-sm-2'>Amount:</label>
+                <div class='col-sm-5'>
+                    <input class= 'form-control'type="number" value='1' id='amount' name='amount'>
+                </div>
+            </div>`
+        if (data1['toppings_allowed']!=0){
+            div+=` <div class="form-group row">
+            <label for="toppings" class='col-sm-2'>Toppings:</label>
+            <div class="col-sm-5">
+                `+toppings+`
+            </div>
+            </div>`
+        }
+        if(sizes){
+            div+=`<div class="form-group row">
+            <label for="sizes" class='col-sm-2'>Sizes:</label>
+            <div class="col-sm-5">
+                `+sizes+`
+            </div>`
+        }
+        div+=`</div>
+            <div class="form-group d-flex justify-content-between">
+                    <input type="submit"  id='add'class='btn btn-success col-3' value='Sbumit'>
+                    <span class="cancel btn btn-danger col-3">Cancel</span>
+            </div>
+        </div>
+        </div>`
+        $('.modal').html(div) 
+        console.log()
+        data = data1
+    })
+    modal.show();
+    
+})
+
+// When the user clicks on <span> (x), close the modal
+// span.click(function() {
+//   modal.hide();
+// })
+$('.modal').on('click','.cancel', function(){
+    modal.hide()
+})
+
+// When the user clicks anywhere outside of the modal, close it
+$(window).click(function(event) {
+  if (event.target == modal[0]) {
+    modal.hide()
+  }
 })

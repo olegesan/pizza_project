@@ -1,11 +1,12 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, QueryDict, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Size, MenuItem, Category, Kind, Cart, Order
+from .models import Size, MenuItem, Category, Kind, Cart, Order, Profile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages import get_messages
 from django.contrib import messages
+from django.forms.models import model_to_dict
 
 #
 # authentication content for pages
@@ -16,7 +17,8 @@ def index(request):
     user_info={
     'user': request.user,
     'Auth' : request.user.is_authenticated
-    }   
+    } 
+    # print(request.user.user_cart.items.count())  
     return render(request, 'orders/index.html', user_info)
 def menu(request):
     content = {
@@ -27,8 +29,12 @@ def menu(request):
         'kinds': Kind.objects.all(),
         'user': request.user,
         'Auth' : request.user.is_authenticated,
+        'toppings': Category.objects.get(addable=True).kinds.all()
     }
     return render(request, "orders/menu.html", content)
+'''
+signup logic 
+'''
 def signup(request):
     if request.method == 'GET':
         return render(request,'orders/signup.html')
@@ -48,6 +54,9 @@ def signup(request):
     #     # print(email, password, username)
     #     return HttpResponse('there was an error')
     return redirect('/')
+'''
+login logic
+'''
 def login_func(request):
     try:
         username = request.POST['username']
@@ -75,7 +84,9 @@ def logout_func(request):
         return render(request,'orders/index.html')
     except:
         return HttpResponse('something went suuuper wrong, perhaps you were not logged in')
-
+'''
+profile logic
+'''
 def profile_open(request, user):
     try:
         if request.user.is_authenticated and str(request.user) == user:
@@ -115,16 +126,57 @@ def cart(request, user):
         if request.user.is_authenticated:
             profile = User.objects.get(username=user).profile
             content = {
-                'user': request.user,
+                'user': profile,
                 'orders':profile.orders,
                 'name': profile.user,
-                'cart': Cart.objects.get(user_id=profile.user.id),
+                'cart': profile.carts.all(),
+                'Auth': request.user.is_authenticated
             }
             return render(request,'orders/cart.html', content)
     elif request.method == 'POST':
-        username = request.POST['user']
-        item_id = request.POST['id']
+        data = QueryDict(request.body)
+        print(data)
+        if data['size_id'] == 'false':
+            item_id = MenuItem.objects.get(kind = data['kind_id'], category = data['cat_id'])
+        else:
+            item_id = MenuItem.objects.get(size=data['size_id'], kind = data['kind_id'], category = data['cat_id'])
+        username = data['user']
+        cart = Cart.objects.create(user_id=User.objects.get(username=username).id, amount = data['amount'], item = item_id)
+        Profile.objects.get(user_id=User.objects.get(username=username).id).carts.add(cart)        
+        # print(cart)
+        # cart = Cart.objects.get(user_id=User.objects.get(username=username).id)
+        # print('Success adding to the cart')
+    elif request.method == 'DELETE':
+        data = QueryDict(request.body)
+        username = data['user']
+        item_id = data['id']
+        # username = request.POST['user']
+        # item_id = request.POST['id']
         cart = Cart.objects.get(user_id=User.objects.get(username=username).id)
-        # print(username, item_id)
-        cart.items.add(item_id)
-        
+        cart.items.remove(item_id)
+        print('Success deleting')
+        return HttpResponse(status=200)
+def api(request):
+    if request.method == 'GET':
+        # cat = Category.objects.get(addable=True).kinds.all() #getting toppings, probably not necessary now
+        cat_id, kind_id = request.GET['id'].split('_')
+        menu_item = MenuItem.objects.filter(kind = kind_id, category = cat_id)
+        toppings=[]
+        for topping in Category.objects.get(addable=True).kinds.all():
+            toppings.append(topping.kind)
+        kind= {'cat':Category.objects.get(pk=cat_id).category, 'kind':Kind.objects.get(pk=kind_id).kind,
+        'toppings':toppings, 'cat_id':cat_id, 'kind_id':kind_id,'sizes':list(),'toppings_allowed':Kind.objects.get(pk=kind_id).toppings_allowed
+        }
+        for item in menu_item:
+            try:
+                if item.size.size:
+                    kind[item.size.size] = {'size':item.size.size,
+                                    'price': item.price,
+                                    'id':item.size.id }
+                    kind['sizes'].append(item.size.size)
+            except:
+                print('error')
+        print(kind)
+        response = JsonResponse( kind
+        )
+        return HttpResponse(response, status=200)
