@@ -19,5 +19,9 @@ TODO:
 - add user profile page with:
   - current orders status
   - orders history
-- add cart
+- add cart:
+  - DONE adding items to the cart
+  - add teleting items from the cart
+  - add number of items added to the cart
+  - update cart symbol with number of orders
 - add orders to the stuff view
