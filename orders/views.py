@@ -126,7 +126,7 @@ def cart(request, user):
         if request.user.is_authenticated:
             profile = User.objects.get(username=user).profile
             content = {
-                'user': profile,
+                'user': request.user,
                 'orders':profile.orders,
                 'name': profile.user,
                 'cart': profile.carts.all(),
@@ -150,10 +150,12 @@ def cart(request, user):
         data = QueryDict(request.body)
         username = data['user']
         item_id = data['id']
+        print(data)
         # username = request.POST['user']
         # item_id = request.POST['id']
-        cart = Cart.objects.get(user_id=User.objects.get(username=username).id)
-        cart.items.remove(item_id)
+        cart = Cart.objects.filter(user_id=User.objects.get(username=username).id)
+        item = cart.get(id=item_id)
+        item.delete()
         print('Success deleting')
         return HttpResponse(status=200)
 def api(request):
@@ -165,7 +167,8 @@ def api(request):
         for topping in Category.objects.get(addable=True).kinds.all():
             toppings.append(topping.kind)
         kind= {'cat':Category.objects.get(pk=cat_id).category, 'kind':Kind.objects.get(pk=kind_id).kind,
-        'toppings':toppings, 'cat_id':cat_id, 'kind_id':kind_id,'sizes':list(),'toppings_allowed':Kind.objects.get(pk=kind_id).toppings_allowed
+        'toppings':toppings, 'cat_id':cat_id, 'kind_id':kind_id,'sizes':list(),'toppings_allowed':Kind.objects.get(pk=kind_id).toppings_allowed, 
+        'toppings_left':Kind.objects.get(pk=kind_id).toppings_allowed,
         }
         for item in menu_item:
             try:

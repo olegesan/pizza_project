@@ -27,6 +27,11 @@ $.ajaxSetup({
 })
 // adding an element to user's cart
 $('.modal').on('click','#add', function(){
+    tops = []
+    $('input[type="checkbox"]:checked').each(function(){
+        tops.push($(this).val())
+    })
+    
     if(data['sizes'].length>0){
         $.ajax({
             url:'/{{user}}/cart/', 
@@ -34,7 +39,8 @@ $('.modal').on('click','#add', function(){
             data :{'amount':$("#amount").val(),
             'size':$('input[name="size"]:checked').val(),
             'kind_id':data['kind_id'], 'cat_id':data['cat_id'],'size_id':data[$('input[name="size"]:checked').val()]['id'],
-        'user': name}
+            'toppings':tops,
+            'user': name}
         });
         console.log($('input[name="size"]:checked').val())
     }
@@ -48,7 +54,8 @@ $('.modal').on('click','#add', function(){
         });
         console.log('no size')
     }
-    
+    modal.html('')
+    modal.hide()
        
     
 })
@@ -118,7 +125,7 @@ btn.click(function() {
             </div>`
         if (data1['toppings_allowed']!=0){
             div+=` <div class="form-group row">
-            <label for="toppings" class='col-sm-2'>Toppings:</label>
+            <label for="toppings" class='col-sm-2'>Toppings: <span id='toppings_left'>${data1['toppings_allowed']}</span> left</label>
             <div class="col-sm-5">
                 `+toppings+`
             </div>
@@ -145,12 +152,37 @@ btn.click(function() {
     modal.show();
     
 })
+modal.on('click', 'input[type="checkbox"]', function(){
+    // console.log($('input[type="checkbox"]:checked').length,data['toppings_left'])
+    if(data['toppings_left']>=0){
+        if($(this).prop('checked')){
+            data['toppings_left']-=1
+            $('#toppings_left').text(data['toppings_left'])
+            if(data['toppings_left']==0){
+                unchecked = $('input[type="checkbox"]:not(:checked)')
+                unchecked.prop('disabled', true)
+            }
+        }
+        else{
+            data['toppings_left']+=1
+            $('#toppings_left').text(data['toppings_left'])
+            if(data['toppings_left']>0){
+                unchecked = $('input[type="checkbox"]:not(:checked)')
+                unchecked.prop('disabled', false)
+            }
+        }
+    }
+    
 
+    // toppings_left = $('#toppings_left').text()
+    // $('#toppings_left').text() = 
+})
 // When the user clicks on <span> (x), close the modal
 // span.click(function() {
 //   modal.hide();
 // })
 $('.modal').on('click','.cancel', function(){
+    $('.modal').html('') 
     modal.hide()
 })
 
@@ -158,5 +190,6 @@ $('.modal').on('click','.cancel', function(){
 $(window).click(function(event) {
   if (event.target == modal[0]) {
     modal.hide()
+    $('.modal').html('') 
   }
 })
