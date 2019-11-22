@@ -13,6 +13,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 var csrftoken = getCookie('csrftoken');
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -25,24 +26,27 @@ $.ajaxSetup({
         }
     }
 })
+//calculating total price in the cart
 // adding an element to user's cart
 $('.modal').on('click','#add', function(){
-    tops = []
+    //determining what toppings were chosen by the user
+    tops = ''
     $('input[type="checkbox"]:checked').each(function(){
-        tops.push($(this).val())
+        tops+=($(this).val()+' ')
     })
-    
+    //checking for two types of items'sizes
     if(data['sizes'].length>0){
+        console.log(user)
         $.ajax({
             url:'/{{user}}/cart/', 
             type: 'POST',
             data :{'amount':$("#amount").val(),
             'size':$('input[name="size"]:checked').val(),
             'kind_id':data['kind_id'], 'cat_id':data['cat_id'],'size_id':data[$('input[name="size"]:checked').val()]['id'],
-            'toppings':tops,
-            'user': name}
+            'user': user,
+            'toppings_id':tops,}
         });
-        console.log($('input[name="size"]:checked').val())
+        console.log(tops)
     }
     else{
         $.ajax({
@@ -50,9 +54,16 @@ $('.modal').on('click','#add', function(){
             type: 'POST',
             data :{'amount':$("#amount").val(),
             'kind_id':data['kind_id'], 'cat_id':data['cat_id'],'size_id':false,
-        'user': name}
+        'user': user,
+        'toppings_id':tops}
         });
         console.log('no size')
+    }
+    // changing cart count indicator
+    if($('#cart_count').text()==''){
+        $('#cart_count').text(1)
+    }else{
+        $('#cart_count').text(Number($('#cart_count').text())+1)
     }
     modal.html('')
     modal.hide()
@@ -60,16 +71,24 @@ $('.modal').on('click','#add', function(){
     
 })
 //deleting an element from user's cart
+total_price = Number($('#total').text())
 $('.del').click(function(){
-    id = $(this).parent().attr('id')
+    price = Number($(this).parent().parent().children('.price').text())
+    id = $(this).parent().parent().attr('id')
     $.ajax({
         url:'/{{user}}/cart/',
         type: 'DELETE',
         data:{'id':id,
-    'user': name}
+    'user': user}
     })
     .done(function(){
+        total_price -= price
+        if(Math.round(total_price)==0){
+            $('#order').prop('disabled', true)
+        }
+        $('#total').text(Math.round(total_price * 100) / 100)
         $('#'+id).remove()
+        $('#cart_count').text(Number($('#cart_count').text())-1)
     })  
 })
 $('.del').css('cursor', 'pointer')
@@ -97,9 +116,9 @@ btn.click(function() {
         toppings = ''
         for(i=0; i<data1['toppings'].length; i++){
             toppings+=`<div class="form-check d-flex justify-content-start">
-            <input class="form-check-input" type="checkbox" value="${data1['toppings'][i]}" id="${data1['toppings'][i]}">
-            <label class="form-check-label" for="${data1['toppings'][i]}">
-                ${data1['toppings'][i]}
+            <input class="form-check-input" type="checkbox" value="${data1['toppings'][i][1]}" id="${data1['toppings'][i][0]}">
+            <label class="form-check-label" for="${data1['toppings'][i][0]}">
+                ${data1['toppings'][i][0]}
             </label>
         </div>`
         }
@@ -192,4 +211,23 @@ $(window).click(function(event) {
     modal.hide()
     $('.modal').html('') 
   }
+})
+// making an order
+$('#order').click(function(){
+    items = ''
+    $('.item').each(function(){
+        items+=($(this).attr('id')+' ')
+    })
+    console.log(items)
+    $.ajax({
+        url: '/{{user}}/order/',
+        method: 'POST',
+        data:{
+            'user':user,
+            'items': items.substring(0,(items.length-1))
+        }
+    }).done(function(){
+        $('#cart_body').html('')
+    })
+    console.log(items)
 })

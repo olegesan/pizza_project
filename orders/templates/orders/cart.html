@@ -3,16 +3,53 @@
 {%block h1 %} <h1 class="container display-3"> Cart </h1> {%endblock%}
 {%block body%}
 <div class="container"> 
-    <div class="jumbotron">{{user}}'s cart:</div> 
-    {{name}}'s cart
+    <div class="jumbotron">
+        <h1 class='title display-3'>{{user}}'s cart:</h1> 
+    </div> 
     <br>
-    {%for item in cart%}
-    <div class='d-flex justify-content-between border-bottom pb-2 mb-1 pt-2' id="{{item.id}}">
-        <div> {{item.item}} </div>
-        <div>{{item.amount}}</div>
-        <div class="del btn btn-danger"> remove </div>
+    <div class='border-bottom' id="{{item.id}}">
+        <table class='text-center w-100 table'>
+            <thead class='thead-light'>
+                <tr>
+                    <th class='w-50'>
+                        Item
+                    </th>
+                    <th>
+                        Quantity
+                    </th>
+                    <th>
+                        Toppings
+                    </th>
+                    <th>
+                        Price $
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id='cart_body'>
+                    {%for item in cart%}
+                    <tr id='{{item.id}}' class='item'>
+                        <td class='text-left'>{{item.item}}</td>
+                        <td>{{item.amount}}</td>
+                        <td> {%for topping in item.toppings.all%}<div>{{topping}}</div>{%endfor%}</td>
+                        <td class='price'>{{item.price}}</td>
+                        <td><div class="del btn btn-danger"> remove </div></td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td class='display-4'>Total </td>
+                        <td><span id='total' class='display-4'>{% if total_price %}{{total_price}}{%else%}0{%endif%}</span></td>
+                        <td><button id='order' class=" btn btn-lg btn-success {% if total_price == 0 %} disabled {%endif%}"> order </button></td>
+                    </tr>
+                </tfoot>
+        </table>
+       
 
     </div> 
-    {%endfor%}
+    
 </div>
 {% endblock %}

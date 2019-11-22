@@ -13,7 +13,8 @@ urlpatterns = [
     path('<str:user>/', views.profile_open, name = 'profile'),
     path('<str:user>/edit/', views.profile_edit, name = 'profile_edit'),
     path('<str:user>/cart/', views.cart, name = 'cart'),
-    path('api/get/', views.api, name = 'api'),
+    path('api/get/', views.cart_api, name = 'cart_api'),
+    path('<str:user>/order/', views.order_api, name = 'order_api')
 
 
     # path('profile/<int:user_id>', view.profile_open, name='profile')

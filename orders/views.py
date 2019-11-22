@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Size, MenuItem, Category, Kind, Cart, Order, Profile
+from .models import Size, MenuItem, Category, Kind, Cart, Order, Profile, OrderStatus
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages import get_messages
@@ -95,7 +95,7 @@ def profile_open(request, user):
                 'Auth' : request.user.is_authenticated
             }
             u = User.objects.get(username=user)
-            print(u.profile.firstname)
+            print(u.profile.orders.all())
             return render(request,'orders/profile.html', content)
         else:
             return HttpResponse('you are not supposed to be here, bruh')
@@ -125,23 +125,32 @@ def cart(request, user):
     if request.method == "GET":
         if request.user.is_authenticated:
             profile = User.objects.get(username=user).profile
+            if profile.carts.all().count() > 0:
+                total_price = profile.carts.first().total_price()
+            else:
+                total_price = 0
             content = {
                 'user': request.user,
                 'orders':profile.orders,
                 'name': profile.user,
                 'cart': profile.carts.all(),
-                'Auth': request.user.is_authenticated
+                'Auth': request.user.is_authenticated,
+                'total_price': total_price,
             }
             return render(request,'orders/cart.html', content)
     elif request.method == 'POST':
         data = QueryDict(request.body)
         print(data)
+        tops = tuple(data['toppings_id'][0:len(data['toppings_id'])-1].split(' '))
         if data['size_id'] == 'false':
             item_id = MenuItem.objects.get(kind = data['kind_id'], category = data['cat_id'])
         else:
             item_id = MenuItem.objects.get(size=data['size_id'], kind = data['kind_id'], category = data['cat_id'])
         username = data['user']
-        cart = Cart.objects.create(user_id=User.objects.get(username=username).id, amount = data['amount'], item = item_id)
+        cart = Cart.objects.create(user_id=User.objects.get(username=username).id, amount = data['amount'], item = item_id, )
+        if tops!=('',):
+            print(tops)
+            cart.toppings.set(tops)
         Profile.objects.get(user_id=User.objects.get(username=username).id).carts.add(cart)        
         # print(cart)
         # cart = Cart.objects.get(user_id=User.objects.get(username=username).id)
@@ -149,23 +158,22 @@ def cart(request, user):
     elif request.method == 'DELETE':
         data = QueryDict(request.body)
         username = data['user']
-        item_id = data['id']
-        print(data)
+        cart_item_id = data['id']
         # username = request.POST['user']
         # item_id = request.POST['id']
-        cart = Cart.objects.filter(user_id=User.objects.get(username=username).id)
-        item = cart.get(id=item_id)
-        item.delete()
+        cart_items = Cart.objects.filter(user_id=User.objects.get(username=username).id)
+        cart_item = cart_items.get(id=cart_item_id)
+        cart_item.delete()
         print('Success deleting')
         return HttpResponse(status=200)
-def api(request):
+def cart_api(request):
     if request.method == 'GET':
         # cat = Category.objects.get(addable=True).kinds.all() #getting toppings, probably not necessary now
         cat_id, kind_id = request.GET['id'].split('_')
         menu_item = MenuItem.objects.filter(kind = kind_id, category = cat_id)
         toppings=[]
         for topping in Category.objects.get(addable=True).kinds.all():
-            toppings.append(topping.kind)
+            toppings.append([topping.kind, topping.id])
         kind= {'cat':Category.objects.get(pk=cat_id).category, 'kind':Kind.objects.get(pk=kind_id).kind,
         'toppings':toppings, 'cat_id':cat_id, 'kind_id':kind_id,'sizes':list(),'toppings_allowed':Kind.objects.get(pk=kind_id).toppings_allowed, 
         'toppings_left':Kind.objects.get(pk=kind_id).toppings_allowed,
@@ -183,3 +191,15 @@ def api(request):
         response = JsonResponse( kind
         )
         return HttpResponse(response, status=200)
+def order_api(request,user):
+    if request.method == 'GET':
+        print('get')
+    if request.method == 'POST':
+        data = QueryDict(request.body)
+        item = data['items'].split()
+        username = data['user']
+        order = Order.objects.create(user_id=User.objects.get(username=username).id, status_id=1)
+        order.item.set(item)
+        User.objects.get(username=username).profile.orders.add(order)
+        print(order)
+        return HttpResponse(status=200)

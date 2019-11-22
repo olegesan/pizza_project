@@ -42,7 +42,7 @@ class MenuItem(models.Model):
     menu_priority = models.IntegerField(default = 100)
     def __str__(self):
         if str(self.category) != 'Toppings':
-            return f'{self.category}: {self.kind} {self.size} for ${self.price} dollars'
+            return f'{self.category}: {self.kind}'
         return f'{self.category}: {self.kind}'
     class Meta:
         ordering = ['-category', 'price', 'size']
@@ -60,14 +60,21 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='user_cart', blank = False, null = False)
     amount = models.IntegerField()
     toppings = models.ManyToManyField(Kind, blank = True, related_name = 'cart_topings')
+    def price(self):
+        return self.amount*self.item.price
+    def total_price(self):
+        output = 0
+        for cart in self.user.profile.carts.all():
+            output+=cart.price()
+        return round(output,2)
     def __str__(self):
-        return f"User: {self.user} Cart item: {self.item} "
+        return f"ID:{self.id} User: {self.user} Cart item: {self.item} Toppings: {self.item} "
 class Order(models.Model):
     item = models.ManyToManyField(Cart, related_name='order_items')
-    user = models.OneToOneField(User, on_delete = models.CASCADE, related_name='user_order', blank = False, null = False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order', blank=False, null = False)
     status = models.ForeignKey(OrderStatus,on_delete = models.CASCADE, related_name='order_statuses', blank = False, null = False)
     def __str__(self):
-        return f'User: {self.user} content: {self.item} status: {self.status}'
+        return f'User: {self.user} content: {self.item.all()} status: {self.status}'
 
 '''
 profile system

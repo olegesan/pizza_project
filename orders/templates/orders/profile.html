@@ -13,6 +13,12 @@
         {%if user.profile.address %}
         <h3>Address: {{user.profile.address}}</h3>
         {%endif%}
+        <h3>Orders:</h3>
+        <ol>
+            {%for order in user.profile.orders.all%}
+            <li>{{order}}</li>
+            {%endfor%}
+        </ol>
         <a href="edit/"><button class="btn btn-success">EDIT</button></a> 
     </div>
 {%endblock%}
