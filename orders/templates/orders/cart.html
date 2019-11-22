@@ -28,6 +28,7 @@
             </thead>
             <tbody id='cart_body'>
                     {%for item in cart%}
+                    {%if item.placed == False%}
                     <tr id='{{item.id}}' class='item'>
                         <td class='text-left'>{{item.item}}</td>
                         <td>{{item.amount}}</td>
@@ -35,6 +36,7 @@
                         <td class='price'>{{item.price}}</td>
                         <td><div class="del btn btn-danger"> remove </div></td>
                     </tr>
+                    {%endif%}
                     {%endfor%}
                 </tbody>
                 <tfoot>

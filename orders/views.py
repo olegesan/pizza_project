@@ -88,19 +88,15 @@ def logout_func(request):
 profile logic
 '''
 def profile_open(request, user):
-    try:
-        if request.user.is_authenticated and str(request.user) == user:
-            content={
-                'user' : User.objects.get(username=user),
-                'Auth' : request.user.is_authenticated
-            }
-            u = User.objects.get(username=user)
-            print(u.profile.orders.all())
-            return render(request,'orders/profile.html', content)
-        else:
-            return HttpResponse('you are not supposed to be here, bruh')
-    except:
-        return HttpResponse('you are not supposed to be here, bruh')
+     if request.user.is_authenticated and str(request.user) == user:
+        content={
+            'user' : User.objects.get(username=user),
+            'Auth' : request.user.is_authenticated
+        }
+        u = User.objects.get(username=user)
+        print(u.profile.orders.all())
+        return render(request,'orders/profile.html', content)
+        # return HttpResponse('you are not supposed to be here, bruh')
 
 def profile_edit(request, user):
     if request.method == "GET":
@@ -133,7 +129,7 @@ def cart(request, user):
                 'user': request.user,
                 'orders':profile.orders,
                 'name': profile.user,
-                'cart': profile.carts.all(),
+                'cart': profile.carts.filter(placed=False),
                 'Auth': request.user.is_authenticated,
                 'total_price': total_price,
             }
@@ -198,8 +194,13 @@ def order_api(request,user):
         data = QueryDict(request.body)
         item = data['items'].split()
         username = data['user']
-        order = Order.objects.create(user_id=User.objects.get(username=username).id, status_id=1)
+        order = Order.objects.create(user_id=User.objects.get(username=username).id, status_id=2)
         order.item.set(item)
         User.objects.get(username=username).profile.orders.add(order)
-        print(order)
+        for id in item:
+            
+            cart = Cart.objects.get(pk=id)
+            cart.placed = True
+            cart.save()
+            print(cart)
         return HttpResponse(status=200)

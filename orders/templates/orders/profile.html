@@ -13,12 +13,39 @@
         {%if user.profile.address %}
         <h3>Address: {{user.profile.address}}</h3>
         {%endif%}
-        <h3>Orders:</h3>
-        <ol>
-            {%for order in user.profile.orders.all%}
-            <li>{{order}}</li>
-            {%endfor%}
-        </ol>
+        <table class='table w-100'>
+            <h3>Orders:</h3>
+            <thead class='thead-light'>
+                <tr>
+                    <th>Items</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for order in user.profile.orders.all%}
+                <tr>
+                    <td>
+                        {%for item in order.item.all%}
+                        <div> {{item.item}}</div>
+                        {%endfor%}
+                    </td>
+                    <td>
+                        {%for item in order.item.all%}
+                        <div> {{item.amount}}</div>
+                        {%endfor%}
+                    </td>
+                    <td>
+                        <div> {{order.item.first.total_price}}</div>
+                    </td>
+                    <td>
+                        <div> {{order.status}}</div>
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
         <a href="edit/"><button class="btn btn-success">EDIT</button></a> 
     </div>
 {%endblock%}

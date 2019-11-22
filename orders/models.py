@@ -60,15 +60,16 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='user_cart', blank = False, null = False)
     amount = models.IntegerField()
     toppings = models.ManyToManyField(Kind, blank = True, related_name = 'cart_topings')
+    placed = models.BooleanField(default=False)
     def price(self):
-        return self.amount*self.item.price
+        return round(self.amount*self.item.price,2)
     def total_price(self):
         output = 0
-        for cart in self.user.profile.carts.all():
+        for cart in self.user.profile.carts.filter(placed=False):
             output+=cart.price()
         return round(output,2)
     def __str__(self):
-        return f"ID:{self.id} User: {self.user} Cart item: {self.item} Toppings: {self.item} "
+        return f"ID:{self.id} Placed: {self.placed} User: {self.user} Cart item: {self.item} Toppings: {self.item} "
 class Order(models.Model):
     item = models.ManyToManyField(Cart, related_name='order_items')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order', blank=False, null = False)

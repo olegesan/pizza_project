@@ -27,6 +27,13 @@ $.ajaxSetup({
     }
 })
 //calculating total price in the cart
+
+// total price = 0 adjustments
+function total_zero(){
+    $('#total').text(0)
+    $('#order').prop('disabled', true)
+    $('#cart_count').text(0)
+}
 // adding an element to user's cart
 $('.modal').on('click','#add', function(){
     //determining what toppings were chosen by the user
@@ -84,7 +91,7 @@ $('.del').click(function(){
     .done(function(){
         total_price -= price
         if(Math.round(total_price)==0){
-            $('#order').prop('disabled', true)
+            total_zero();
         }
         $('#total').text(Math.round(total_price * 100) / 100)
         $('#'+id).remove()
@@ -212,13 +219,13 @@ $(window).click(function(event) {
     $('.modal').html('') 
   }
 })
+
 // making an order
 $('#order').click(function(){
     items = ''
     $('.item').each(function(){
         items+=($(this).attr('id')+' ')
     })
-    console.log(items)
     $.ajax({
         url: '/{{user}}/order/',
         method: 'POST',
@@ -228,6 +235,6 @@ $('#order').click(function(){
         }
     }).done(function(){
         $('#cart_body').html('')
+        total_zero();
     })
-    console.log(items)
 })
