@@ -23,7 +23,7 @@ TODO:
   - orders history
 - add cart:
   - DONE adding items to the cart
-  - add teleting items from the cart
-  - add number of items added to the cart
-  - update cart symbol with number of orders
+  - DONE deleting items from the cart
+  - DONE number of items added to the cart
+  - WORKING update cart symbol with number of orders
 - add orders to the stuff view
