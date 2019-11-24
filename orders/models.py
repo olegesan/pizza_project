@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 ###
 ### support 
 ###
@@ -50,8 +51,13 @@ class MenuItem(models.Model):
 """
 ordering system
 """
+class StatusCatergory(models.Model):
+    status_category = models.CharField(max_length=64)
+    def __str__(self):
+        return f'{self.status_category}'
 
 class OrderStatus(models.Model):
+    status_category =  models.ForeignKey(StatusCatergory, on_delete=models.CASCADE, related_name='statuses_cat', blank=True, default = 1)
     status = models.CharField(max_length=64)
     def __str__(self):
         return f"{self.status}"
@@ -73,10 +79,17 @@ class Cart(models.Model):
 class Order(models.Model):
     item = models.ManyToManyField(Cart, related_name='order_items')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order', blank=False, null = False)
-    status = models.ForeignKey(OrderStatus,on_delete = models.CASCADE, related_name='order_statuses', blank = False, null = False)
+    status = models.ForeignKey(OrderStatus,on_delete = models.CASCADE, related_name='order_statuses', blank = False, null = False, default = 3)
+    date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     def __str__(self):
-        return f'User: {self.user} content: {self.item.all()} status: {self.status}'
-
+        return f'User: {self.user} Time:{self.date} content: {self.item.all()} status: {self.status}'
+    def price(self):
+        output = 0
+        for cart in self.item.all():
+            output+= cart.price()
+        return round(output,2)
+    class Meta:
+        ordering = ['-date']
 '''
 profile system
 '''

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Size, MenuItem, Category, Kind, Profile, Cart, OrderStatus, Order
+from .models import Size, MenuItem, Category, Kind, Profile, Cart, OrderStatus, Order, StatusCatergory
 admin.site.register(Size)
 # admin.site.register(Price)
 admin.site.register(MenuItem)
@@ -9,6 +9,7 @@ admin.site.register(Profile)
 admin.site.register(Cart)
 admin.site.register(OrderStatus)
 admin.site.register(Order)
+admin.site.register(StatusCatergory)
 
 
 

@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Size, MenuItem, Category, Kind, Cart, Order, Profile, OrderStatus
+from .models import Size, MenuItem, Category, Kind, Cart, Order, Profile, OrderStatus, StatusCatergory
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages import get_messages
@@ -85,18 +85,33 @@ def logout_func(request):
     except:
         return HttpResponse('something went suuuper wrong, perhaps you were not logged in')
 '''
-profile logic
+profile page logic
 '''
 def profile_open(request, user):
-     if request.user.is_authenticated and str(request.user) == user:
-        content={
-            'user' : User.objects.get(username=user),
-            'Auth' : request.user.is_authenticated
-        }
-        u = User.objects.get(username=user)
-        print(u.profile.orders.all())
-        return render(request,'orders/profile.html', content)
-        # return HttpResponse('you are not supposed to be here, bruh')
+    if request.method=='GET':
+        if request.user.is_authenticated and str(request.user) == user:
+            content={
+                'user' : User.objects.get(username=user),
+                'Auth' : request.user.is_authenticated,
+                'active': User.objects.get(username=user).profile.orders.filter(status_id=2),
+                'order_cat':StatusCatergory.objects.all()
+            }
+            # print(u.profile.orders.all())
+            return render(request,'orders/profile.html', content)
+            # return HttpResponse('you are not supposed to be here, bruh')
+    #deleteing order logig
+    elif request.method == 'DELETE':
+        data = QueryDict(request.body)
+        username = data['user']
+        order_id = data['id']
+        # username = request.POST['user']
+        # item_id = request.POST['id']
+        order = Order.objects.filter(pk=order_id)
+        
+        order.delete()
+        print('Success deleting')
+        return HttpResponse(status=200)
+        return HttpResponse('you try to DELETE something')
 
 def profile_edit(request, user):
     if request.method == "GET":

@@ -238,3 +238,18 @@ $('#order').click(function(){
         total_zero();
     })
 })
+//cancel order section
+$('.cancel_order').click(function(){
+    id = $(this).parent().parent().parent().attr('id')
+    console.log(id)
+    $.ajax({
+        url:`/${user}/`,
+        type: 'DELETE',
+        data:{'id':id,
+    'user': user}
+    })
+    .done(function(){
+        $('#'+id).remove()
+    })  
+})
+$('.del').css('cursor', 'pointer')

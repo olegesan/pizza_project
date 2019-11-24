@@ -3,7 +3,7 @@
 {%block h1%} <h1 class="title container display-3">{{user}}'s profile</h1> {%endblock%}
 {% block body%}
     <div class="container">
-        <h2 class="display-3">{{user}}</h2>
+        <h2 class="display-3">{{user}}</h2> <a href="edit/"><button class="btn btn-success">EDIT</button></a>
         {% if user.profile.firstname %} 
         <h3>First Name: {{user.profile.firstname}}</h3>
         {%endif%}
@@ -13,19 +13,24 @@
         {%if user.profile.address %}
         <h3>Address: {{user.profile.address}}</h3>
         {%endif%}
-        <table class='table w-100'>
-            <h3>Orders:</h3>
+        
+            <h3 class='text-center'>Orders</h3>
+            {% for status in order_cat%}
+            <table class='table w-100'>
+            <h4>{{status}}:</h4>
             <thead class='thead-light'>
                 <tr>
                     <th>Items</th>
                     <th>Quantity</th>
                     <th>Total</th>
+                    <th>Time</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 {%for order in user.profile.orders.all%}
-                <tr>
+                {% if order.status.status_category.status_category == status.status_category%}
+                <tr id={{order.id}}>
                     <td>
                         {%for item in order.item.all%}
                         <div> {{item.item}}</div>
@@ -37,15 +42,21 @@
                         {%endfor%}
                     </td>
                     <td>
-                        <div> {{order.item.first.total_price}}</div>
+                        <div> {{order.price}}</div>
                     </td>
                     <td>
-                        <div> {{order.status}}</div>
+                        <div> {{order.date}}</div>
+                    </td>
+                    <td>
+                        <div> {{order.status}} <span class="cancel_order btn btn-danger">{%if status.status_category != 'History' %} cancel {%else%} remove {%endif%}</span></div>
                     </td>
                 </tr>
+                {% endif%}
                 {%endfor%}
             </tbody>
+            
         </table>
-        <a href="edit/"><button class="btn btn-success">EDIT</button></a> 
+        {%endfor%}
+         
     </div>
 {%endblock%}
