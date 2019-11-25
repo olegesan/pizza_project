@@ -112,7 +112,7 @@ var data = {}
 // When the user clicks the button, open the modal 
 btn.click(function() {
     $.ajax({
-        url:'api/get/', 
+        url:'cart/api/', 
         type: 'GET',
         data :{'id':$(this).parent().parent().attr('id'),
     'user': name}
@@ -253,3 +253,78 @@ $('.cancel_order').click(function(){
     })  
 })
 $('.del').css('cursor', 'pointer')
+//edit order by staff
+$('.edit_order').click(function(){
+    console.log('clicked')
+    order_id = $(this).parent().parent().parent().attr('id')
+    order_status_id = $(this).parent().parent().parent().find('.order_status').attr('id')
+    order_edit = $(this)
+    if(order_edit.text()=='edit'){
+
+        $.ajax({
+            url:'/orders/api/',
+            method:'GET',
+        }).done(function(data1){
+            data = JSON.parse(data1)
+            statuses_html = ''
+            console.log(data['statuses'])
+            for(i=0; i<data['statuses'].length; i++){
+                statuses_html+= `<option value="${data['statuses'][i][1]}">${data['statuses'][i][0]}</option>`
+            }
+            html = `<select name='status'>
+            ${statuses_html}
+            </select>
+            `
+            console.log(html)
+            $('#'+order_status_id).html(html)
+            order_edit.text('upd')
+            // order_edit.removeClass('edit_order')
+            // order_edit.addClass('update_order')
+        })
+    }else{
+        order_time = $(this).parent().parent().parent().find('.order_time')
+        status = $('#'+order_status_id).find('select').val()
+        $.ajax({
+                    url:'/orders/api/',
+                    method:'UPDATE',
+                    data:{'status': status,
+                    'order_id':order_id
+                }
+                })
+                .done(function(data1){
+                    data = JSON.parse(data1)
+                    status_html = `<div id='${data['order_id']}order_status' class='order_status'> ${data['status']}</div>`
+                    $('#'+order_status_id).html(status_html)
+                    order_edit.text('edit')
+                    order_time.text(data['time'])
+                    // order_edit.removeClass('edit_order')
+                    // order_edit.addClass('update_order')
+                })
+    }
+})
+// $('table').on('click', '.update_order', function(){
+//     console.log('update clicked')
+//     order_status = $(this).parent().parent().parent().find('.order_status')
+//     order_update= $(this)
+//     $.ajax({
+//         url:'/orders/api/',
+//         method:'UPDATE',
+//         data:'hello'
+//     })
+    // .done(function(data1){
+    //     data = JSON.parse(data1)
+    //     statuses_html = ''
+    //     console.log('hello')
+    //     for(i=0; i<data['statuses'].length; i++){
+    //         statuses_html+= `<option value="${data['statuses'][i]}">${data['statuses'][i]}</option>`
+    //     }
+    //     html = `<select name='status'>
+    //     ${statuses_html}
+    //     </select>
+    //     `
+    //     order_status.html(html)
+    //     order_edit.text('upd')
+    //     order_edit.removeClass('edit_order')
+    //     order_edit.addClass('update_order')
+    // })
+// })

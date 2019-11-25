@@ -22,10 +22,11 @@ urlpatterns = [
     path("menu/", include("orders.urls")),
     path('signup/', include('orders.urls')),
     path('login/', include('orders.urls')),
+    path('orders/', include('orders.urls')),
     path('<str:user>',include('orders.urls')),
     path('<str:user>/edit/', include('orders.urls')),
     path('<str:user>/cart/', include('orders.urls')),
-    path('api/get/', include('orders.urls')),
-    path('<str:user>/order/', include('orders.urls')),
+    path('cart/api/', include('orders.urls')),
+    path('orders/api/', include('orders.urls')),
 
 ]

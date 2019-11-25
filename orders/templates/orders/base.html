@@ -22,16 +22,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/menu/">Menu</a>
                     </li>
-                    {% if Auth %}
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="/{{user}}/">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout/">Log out</a>
                     </li>
+                    {%if user.is_staff%}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/orders/">Orders</a>
+                    </li>
+                    {%else%}
                     <li class="nav-item">
                         <a class="nav-link" href="/{{user}}/cart/">Cart <span id='cart_count'>{%if cart.count > 0%}{{cart.count}}{%else%}0{%endif%}</span></a>
                     </li>
+                    {%endif%}
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/signup/">Sign Up</a>

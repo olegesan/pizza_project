@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages import get_messages
 from django.contrib import messages
 from django.forms.models import model_to_dict
+import datetime
 
 #
 # authentication content for pages
@@ -202,9 +203,37 @@ def cart_api(request):
         response = JsonResponse( kind
         )
         return HttpResponse(response, status=200)
-def order_api(request,user):
+#handling orders logic
+
+#addding and deleteing orders in DB
+def order_api(request):
     if request.method == 'GET':
-        print('get')
+        statuses = []
+        for status in OrderStatus.objects.all():
+            statuses.append([status.status, status.id])
+        print(statuses)
+        data = {
+            'statuses':statuses
+        }
+        response = JsonResponse(data)
+        return HttpResponse(response, status=200)
+    if request.method == "UPDATE":
+        data = QueryDict(request.body)
+        status_id = data['status']
+        order_id = data['order_id']
+        order = Order.objects.get(pk=order_id)
+        order.status_id = status_id
+        now = datetime.datetime.now()
+        order.date = now
+        order.save()
+        output ={
+            'status':OrderStatus.objects.get(pk=status_id).status,
+            'time': now,
+            'order_id':order_id,
+
+        }
+        response = JsonResponse(output)
+        return HttpResponse( response, status=200)
     if request.method == 'POST':
         data = QueryDict(request.body)
         item = data['items'].split()
@@ -219,3 +248,13 @@ def order_api(request,user):
             cart.save()
             print(cart)
         return HttpResponse(status=200)
+# managing orders for the staff logic
+def order(request):
+    if request.user.is_staff:
+        content = {
+            'orders':Order.objects.all(),
+            'user':request.user,
+        }
+        return render(request, 'orders/orders.html', content)
+    else: 
+        return render(request, 'orders/index.html')

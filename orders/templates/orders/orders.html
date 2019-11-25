@@ -1,0 +1,63 @@
+{%extends 'orders/base.html' %}
+{%block title%} Orders panel {%endblock%}
+{%block h1%} <h1 class="display-2 container">Orders panel</h1> {%endblock%}
+{%block body%} 
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+   
+</div>
+<div class="container">
+    <table class='table w-100'>
+        <h4>Orders</h4>
+        <thead class='thead-light'>
+            <tr>
+                <th>Items</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Time</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for order in orders%}
+            <tr id={{order.id}}>
+                <td>
+                    {%for item in order.item.all%}
+                    <div> {{item.item}}</div>
+                    {%endfor%}
+                </td>
+                <td>
+                    {%for item in order.item.all%}
+                    <div> {{item.amount}}</div>
+                    {%endfor%}
+                </td>
+                <td>
+                    <div> {{order.price}}</div>
+                </td>
+                <td>
+                    <div class='order_time'> {{order.date}}</div>
+                </td>
+                <td>
+                    <div> {{order.user.profile.address}}</div>
+                </td>
+                <td>
+                    <div id='{{order.id}}order_status' class='order_status'> {{order.status}}</div>
+                </td>
+                <td>
+                    <div> <span class="edit_order btn btn-success">edit</span></div>
+                </td>
+                <td>
+                    <div> <span class="cancel_order btn btn-danger">remove</span></div>
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+        
+    </table>
+
+</div>
+
+{%endblock%}

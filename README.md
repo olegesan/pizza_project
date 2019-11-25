@@ -18,12 +18,12 @@ TODO:
     - message would show up regardless of the user/ test using two browsers
 - add user profile page with:
   - DONE add logic and authentication for the page
-  - adjust USER model to add information about orders
-  - current orders status
-  - orders history
-- add cart:
+  - DONE USER model to add information about orders
+  - DONE current orders status
+  - DONE orders history
+- DONE cart:
   - DONE adding items to the cart
   - DONE deleting items from the cart
   - DONE number of items added to the cart
-  - WORKING update cart symbol with number of orders
+  - DONE update cart symbol with number of orders
 - add orders to the stuff view
