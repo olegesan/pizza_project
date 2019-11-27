@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .models import Size, MenuItem, Category, Kind, Cart, Order, Profile, OrderStatus, StatusCatergory
+from .models import Size, MenuItem, Category, Kind, Cart, Order, Profile, OrderStatus, StatusCatergory, OrderItem
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages import get_messages
@@ -137,15 +137,15 @@ def cart(request, user):
     if request.method == "GET":
         if request.user.is_authenticated:
             profile = User.objects.get(username=user).profile
-            if profile.carts.all().count() > 0:
-                total_price = profile.carts.first().total_price()
+            if profile.cart.all().count() > 0:
+                total_price = profile.cart.first().total_price()
             else:
                 total_price = 0
             content = {
                 'user': request.user,
                 'orders':profile.orders,
                 'name': profile.user,
-                'cart': profile.carts.filter(placed=False),
+                'cart': profile.cart.filter(placed=False),
                 'Auth': request.user.is_authenticated,
                 'total_price': total_price,
             }
@@ -163,7 +163,7 @@ def cart(request, user):
         if tops!=('',):
             print(tops)
             cart.toppings.set(tops)
-        Profile.objects.get(user_id=User.objects.get(username=username).id).carts.add(cart)        
+        Profile.objects.get(user_id=User.objects.get(username=username).id).cart.add(cart)        
         # print(cart)
         # cart = Cart.objects.get(user_id=User.objects.get(username=username).id)
         # print('Success adding to the cart')

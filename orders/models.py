@@ -71,13 +71,19 @@ class Cart(models.Model):
         return round(self.amount*self.item.price,2)
     def total_price(self):
         output = 0
-        for cart in self.user.profile.carts.filter(placed=False):
+        for cart in self.user.profile.cart.filter(placed=False):
             output+=cart.price()
         return round(output,2)
     def __str__(self):
         return f"ID:{self.id} Placed: {self.placed} User: {self.user} Cart item: {self.item} Toppings: {self.item} "
+class OrderItem(models.Model):
+    item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, blank=False)
+    amount = models.IntegerField()
+    toppings = models.ManyToManyField(Kind, blank=True, related_name='order_item_toppings')
+    def price(self):
+        return round(self.amount*self.item.price, 2)
 class Order(models.Model):
-    item = models.ManyToManyField(Cart, related_name='order_items')
+    items = models.ManyToManyField(OrderItem, related_name='order_items')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order', blank=False, null = False)
     status = models.ForeignKey(OrderStatus,on_delete = models.CASCADE, related_name='order_statuses', blank = False, null = False, default = 3)
     date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -85,8 +91,8 @@ class Order(models.Model):
         return f'User: {self.user} Time:{self.date} content: {self.item.all()} status: {self.status}'
     def price(self):
         output = 0
-        for cart in self.item.all():
-            output+= cart.price()
+        for item in self.items.all():
+            output+= item.price()
         return round(output,2)
     class Meta:
         ordering = ['-date']
@@ -96,10 +102,10 @@ profile system
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     address = models.CharField(max_length=256, blank=True)
-    orders = models.ManyToManyField(Order, related_name='users_order', blank = True)
+    orders = models.ManyToManyField(Order, related_name='users_orders', blank = True)
     firstname = models.CharField(max_length=64, blank = True)
     lastname = models.CharField(max_length=64, blank = True)
-    carts = models.ManyToManyField(Cart, related_name='users_carts', blank = True)
+    cart = models.ManyToManyField(Cart, related_name='users_cart', blank = True)
     def __str__(self):
         return f'{self.user}'
 @receiver(post_save, sender=User)

@@ -32,7 +32,7 @@ $.ajaxSetup({
 function total_zero(){
     $('#total').text(0)
     $('#order').prop('disabled', true)
-    $('#cart_count').text(0)
+    // $('#cart_count').text(0)
 }
 // adding an element to user's cart
 $('.modal').on('click','#add', function(){
