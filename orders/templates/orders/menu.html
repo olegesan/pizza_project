@@ -30,7 +30,7 @@
                     {% for kind in category.kinds.all %}
                        
                         <tr>
-                            <td id='{{category.id}}_{{kind.id}}'> {%if not category.no_price%}<div id=''class="container d-flex justify-content-start"> <span class=' myBtn btn btn-primary mr-5'>add</span> <span>{{kind}}</span> </div>{%else%} <span>{{kind}}</span>{%endif%}</td>
+                            <td id='{{category.id}}_{{kind.id}}'> {%if not category.no_price%}<div id=''class="container d-flex justify-content-start">{%if user.is_authenticated%} <span class=' myBtn btn btn-primary mr-5'>add</span> {%endif%}<span>{{kind}}</span> </div>{%else%} <span>{{kind}}</span>{%endif%}</td>
                             {% for size in category.sizes.all%}
                                 {%for menuItem in menu %}
                                     {% if menuItem.category == category and menuItem.kind == kind and menuItem.size == size%}

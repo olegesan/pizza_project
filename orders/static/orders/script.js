@@ -36,6 +36,11 @@ function total_zero(){
 }
 // adding an element to user's cart
 $('.modal').on('click','#add', function(){
+
+    if(data['toppings_left']>0){
+        $('.modal').find('.pop_up_message').text('Add more toppings')
+        return
+    }
     //determining what toppings were chosen by the user
     tops = ''
     $('input[type="checkbox"]:checked').each(function(){
@@ -143,6 +148,7 @@ btn.click(function() {
         div = ` <div class="modal-content">
         <div method='POST' class='form'>
             <h2 class='title text-center'>${data1['cat']}: ${data1['kind']}</h2>
+            <h2 class = 'pop_up_message'></h2>
             <div class="form-group row">
                 <label for="amount" class='col-sm-2'>Amount:</label>
                 <div class='col-sm-5'>
