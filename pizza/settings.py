@@ -120,4 +120,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 JQUERY_URL = True
 DEBUG=True
-STATIC_ROOT = './orders/static/'
+STATIC_ROOT = '/orders/static/'
