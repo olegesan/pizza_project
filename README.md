@@ -17,8 +17,8 @@ staff-member user:
 - Login: 'stuff'
 - Pswd: 'stuff'
 
-Front-end: Jquery, Bootstrap
-Back-end: Django
+**Front-end: Jquery, Bootstrap**
+**Back-end: Django**
 
 deployed at: https://bazz-pizza-project.herokuapp.com/
 
