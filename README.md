@@ -1,29 +1,27 @@
-# Project 3
+# Project 3 in the cource of Web Programming with Python and JavaScript from Web50
 
-Web Programming with Python and JavaScript
+A minimalistic website for a [pizza] restaurant. 
 
-- DONE solve the problem with the items on the menu and then think of the organization of options for those items - DONE
-- DONE think of the way to make types of pizza 1,2,3 toppings more flexible - DONE
-- DONE add all of the options for other foods on the menu? -DONE
+Features: 
+- user authentication and authorization
+- user profile and order history
+- Dynamic Cart
+- Order management system
+- complete menu customization with Django admin pannel
 
-TODO:
-- add users system:
-  - DONE authentication
-  - AUTO sessions
-  - DONE log out logic
-  - DONE signing up
-  known issues:
-    - FIXED can't handle wrong password
-  potential issues:
-    - message would show up regardless of the user/ test using two browsers
-- add user profile page with:
-  - DONE add logic and authentication for the page
-  - DONE USER model to add information about orders
-  - DONE current orders status
-  - DONE orders history
-- DONE cart:
-  - DONE adding items to the cart
-  - DONE deleting items from the cart
-  - DONE number of items added to the cart
-  - DONE update cart symbol with number of orders
-- add orders to the stuff view
+regular user: 
+-Login: 'bazz'
+-Pswd: 'bazz'
+
+staff-member user:
+-Login: 'stuff'
+-Pswd: 'stuff'
+
+Front-end: Jquery, Bootstrap
+Back-end: Django
+
+deployed at: https://bazz-pizza-project.herokuapp.com/
+
+
+
+
