@@ -10,12 +10,12 @@ Features:
 - complete menu customization with Django admin pannel
 
 regular user: 
--Login: 'bazz'
--Pswd: 'bazz'
+- Login: 'bazz'
+- Pswd: 'bazz'
 
 staff-member user:
--Login: 'stuff'
--Pswd: 'stuff'
+- Login: 'stuff'
+- Pswd: 'stuff'
 
 Front-end: Jquery, Bootstrap
 Back-end: Django
