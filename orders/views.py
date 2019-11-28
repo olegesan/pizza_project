@@ -206,7 +206,7 @@ def cart_api(request):
 #handling orders logic
 
 #addding and deleteing orders in DB
-def order_api(request):
+def order_api(request, user=None):
     if request.method == 'GET':
         statuses = []
         for status in OrderStatus.objects.all():
@@ -236,20 +236,41 @@ def order_api(request):
         return HttpResponse( response, status=200)
     if request.method == 'POST':
         data = QueryDict(request.body)
-        item = data['items'].split()
+        cart_ids = data['items'].split()
         username = data['user']
+        # creating order object
         order = Order.objects.create(user_id=User.objects.get(username=username).id, status_id=2)
-        order.item.set(item)
+        order_items_id = list()
+        for cart_id in cart_ids:
+            cart = Cart.objects.get(pk=cart_id)
+            amount = cart.amount
+            menuitem_id = cart.item.id
+            print(cart, amount, menuitem_id)
+            order_item = OrderItem.objects.create(item_id = menuitem_id, amount = amount)
+            if cart.toppings.count()>0:
+                print(cart.toppings.all())
+                order_item.toppings.set(cart.toppings.all())
+            order_item.save()
+            order_items_id.append(order_item.id)
+            # deleting cart items
+            Cart.objects.get(pk=cart_id).delete()
+        order.items.set(order_items_id)
         User.objects.get(username=username).profile.orders.add(order)
-        for id in item:
+        print(order)
+        
+
+        # order = Order.objects.create(user_id=User.objects.get(username=username).id, status_id=2)
+        # order.item.set(item)
+        # User.objects.get(username=username).profile.orders.add(order)
+        # for id in item:
             
-            cart = Cart.objects.get(pk=id)
-            cart.placed = True
-            cart.save()
-            print(cart)
+        #     cart = Cart.objects.get(pk=id)
+        #     cart.placed = True
+        #     cart.save()
+        #     print(cart)
         return HttpResponse(status=200)
 # managing orders for the staff logic
-def order(request):
+def order(request, user=None):
     if request.user.is_staff:
         content = {
             'orders':Order.objects.all(),

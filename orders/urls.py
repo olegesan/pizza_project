@@ -15,7 +15,7 @@ urlpatterns = [
     path('<str:user>/edit/', views.profile_edit, name = 'profile_edit'),
     path('<str:user>/cart/', views.cart, name = 'cart'),
     path('cart/api/', views.cart_api, name = 'cart_api'),
-    # path('<str:user>/order/', views.order_api, name = 'order_api'),
+    path('<str:user>/order/', views.order_api, name = 'order_api'),
     path('orders/api/', views.order_api, name = 'order_api'),
 
 

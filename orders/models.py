@@ -80,22 +80,26 @@ class OrderItem(models.Model):
     item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, blank=False)
     amount = models.IntegerField()
     toppings = models.ManyToManyField(Kind, blank=True, related_name='order_item_toppings')
+    # price = models.FloatField()
     def price(self):
         return round(self.amount*self.item.price, 2)
+    def __str__(self):
+        return f'Order item ID: {self.id} Items name: {self.item}'
 class Order(models.Model):
     items = models.ManyToManyField(OrderItem, related_name='order_items')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order', blank=False, null = False)
     status = models.ForeignKey(OrderStatus,on_delete = models.CASCADE, related_name='order_statuses', blank = False, null = False, default = 3)
     date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    date_updated = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     def __str__(self):
-        return f'User: {self.user} Time:{self.date} content: {self.item.all()} status: {self.status}'
+        return f'User: {self.user} Time:{self.date} content: {self.items.all()} status: {self.status}'
     def price(self):
         output = 0
         for item in self.items.all():
             output+= item.price()
         return round(output,2)
     class Meta:
-        ordering = ['-date']
+        ordering = ['-date_updated']
 '''
 profile system
 '''

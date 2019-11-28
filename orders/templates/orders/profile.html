@@ -31,12 +31,12 @@
                 {% if order.status.status_category.status_category == status.status_category%}
                 <tr id={{order.id}}>
                     <td>
-                        {%for item in order.item.all%}
+                        {%for item in order.items.all%}
                         <div> {{item.item}}</div>
                         {%endfor%}
                     </td>
                     <td>
-                        {%for item in order.item.all%}
+                        {%for item in order.items.all%}
                         <div> {{item.amount}}</div>
                         {%endfor%}
                     </td>

@@ -12,7 +12,6 @@
         <thead class='thead-light'>
             <tr>
                 <th>Items</th>
-                <th>Quantity</th>
                 <th>Total</th>
                 <th>Time</th>
                 <th>Address</th>
@@ -24,15 +23,35 @@
         <tbody>
             {%for order in orders%}
             <tr id={{order.id}}>
-                <td>
-                    {%for item in order.item.all%}
-                    <div> {{item.item}}</div>
-                    {%endfor%}
-                </td>
-                <td>
-                    {%for item in order.item.all%}
-                    <div> {{item.amount}}</div>
-                    {%endfor%}
+                <td >
+                    <table class='w-100'>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Tops.
+                            </th>
+                            <th>
+                                Quant.
+                            </th>
+                        </tr>
+                        {%for item in order.items.all%}
+                        <tr>
+                            <td>
+                                {{item.item}}
+                            </td>
+                            <td>
+                                {%for topping in item.toppings.all%}
+                                <div>{{topping.kind}}</div>
+                                {%endfor%}
+                            </td>
+                            <td>
+                                {{item.amount}}
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </table>
                 </td>
                 <td>
                     <div> {{order.price}}</div>

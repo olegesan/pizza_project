@@ -32,7 +32,7 @@ $.ajaxSetup({
 function total_zero(){
     $('#total').text(0)
     $('#order').prop('disabled', true)
-    // $('#cart_count').text(0)
+    $('#cart_count').text(0)
 }
 // adding an element to user's cart
 $('.modal').on('click','#add', function(){
@@ -100,7 +100,9 @@ $('.del').click(function(){
         }
         $('#total').text(Math.round(total_price * 100) / 100)
         $('#'+id).remove()
-        $('#cart_count').text(Number($('#cart_count').text())-1)
+        if(Math.round(total_price!=0)){
+            $('#cart_count').text(Number($('#cart_count').text())-1)
+        }
     })  
 })
 $('.del').css('cursor', 'pointer')
@@ -228,6 +230,7 @@ $(window).click(function(event) {
 
 // making an order
 $('#order').click(function(){
+    console.log(user)
     items = ''
     $('.item').each(function(){
         items+=($(this).attr('id')+' ')
